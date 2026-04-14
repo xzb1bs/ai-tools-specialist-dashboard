@@ -102,7 +102,10 @@ export default function Dashboard() {
                 <XAxis dataKey="date" />
                 <YAxis />
                 <Tooltip 
-                  formatter={(value: number) => [`${value.toLocaleString('ru-RU')} ₸`, 'Выручка']} 
+                  formatter={(value: number | undefined) => {
+                    if (value === undefined) return ['0 ₸', 'Выручка'];
+                    return [`${value.toLocaleString('ru-RU')} ₸`, 'Выручка'];
+                  }} 
                 />
                 <Legend />
                 <Line 
