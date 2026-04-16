@@ -3,18 +3,18 @@ import { NextRequest, NextResponse } from 'next/server';
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN!;
 const CHAT_ID = process.env.TELEGRAM_CHAT_ID!;
 
-export async function POST(req: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
-    const order = await req.json();
+    const order = await request.json();
 
     const totalSum = Number(order.totalSumm || order.totalSum || 0);
 
     if (totalSum > 50000) {
-      const message = `🚨 Новый большой заказ!\n\n` +
-        `Сумма: ${totalSum.toLocaleString('ru-RU')} ₸\n` +
-        `Клиент: ${order.firstName || ''} ${order.lastName || ''}\n` +
-        `Город: ${order.delivery?.address?.city || '—'}\n` +
-        `ID заказа: ${order.externalId || order.id}`;
+      const message = `🚨 <b>Новый большой заказ!</b>\n\n` +
+                      `💰 Сумма: <b>${totalSum.toLocaleString('ru-RU')} ₸</b>\n` +
+                      `👤 Клиент: ${order.firstName || ''} ${order.lastName || ''}\n` +
+                      `📍 Город: ${order.delivery?.address?.city || '—'}\n` +
+                      `🔗 ID: ${order.externalId || order.id}`;
 
       await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: 'POST',
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
         })
       });
 
-      console.log(`✅ Уведомление отправлено в Telegram. Сумма: ${totalSum} ₸`);
+      console.log(`✅ Уведомление отправлено! Сумма: ${totalSum} ₸`);
     }
 
     return NextResponse.json({ success: true });
